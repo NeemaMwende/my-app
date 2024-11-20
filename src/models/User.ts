@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../lib/db';
+// import sequelize from '../lib/db';
+const sequelize = require("../lib/db");
 
 const User = sequelize.define('User', {
     name: { type: DataTypes.STRING, allowNull: false},

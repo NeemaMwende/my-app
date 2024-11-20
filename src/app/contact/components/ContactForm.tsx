@@ -13,6 +13,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@radix-ui/react-dropdown-menu";
+import { toast } from "../../../hooks/use-toast";
+import { createUser } from "@/app/actions/user"
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -43,15 +45,38 @@ export const ContactForm = () => {
 
   const onSubmit = async (data: ContactFormValues) => {
     try {
-      console.log(data);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      alert("Form submitted successfully!");
-      form.reset(); // Automatically reset form after successful submission
+      const result = await createUser({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        gender: data.gender,
+        password: data.password,
+      })
+
+      if (result.error) {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        })
+        return
+      }
+
+      toast({
+        title: "Success",
+        description: "User created successfully!",
+      })
+      
+      form.reset()
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("An error occurred while submitting the form.");
+      console.error("Error submitting form:", error)
+      toast({
+        title: "Error",
+        description: "An error occurred while submitting the form.",
+        variant: "destructive",
+      })
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
